@@ -38,24 +38,9 @@
 Module.register("MMM-MP3Player", {
     // <-- user congiurations -->
 	defaults: {
-        useURL: true, // set to false if using local directory (/modules/MMM-MP3Player/music/) for own music
-        
-        // <-- from original JS code -->
-        //var songs = [ ... ] (lines 2 - 15)
-        songsArray: [  // Used if wanting to link your music via URL
-            { 
-                title: "LA Chill Tour",
-                songURL: "https://d34x6xks9kc6p2.cloudfront.net/540997b0-a35f-4b69-86d6-b1c925c4a264/540997b0-a35f-4b69-86d6-b1c925c4a264.mp3"
-            },
-            { 
-                title: "This is it band",
-                songURL: "https://d34x6xks9kc6p2.cloudfront.net/8bd0ca4f-1b57-47e9-8878-516d14196d86/8bd0ca4f-1b57-47e9-8878-516d14196d86.mp3"
-            },
-            { 
-                title: "LA Fusion Jam",
-                songURL: "https://d34x6xks9kc6p2.cloudfront.net/0024ada8-e1c3-4d75-a2df-d19ea5eb6c79/0024ada8-e1c3-4d75-a2df-d19ea5eb6c79.mp3"
-            },
-        ]
+        musicPath: "modules/MMM-MP3Player/music", // path to where music is stored
+        randomOrder: true, // true to shuffle songs - false to play in order listed
+        validImagAudioFileExtensions: "mp3,ogg,wma,aac",  // list of valid file extensions, seperated by commas
 	},
 
     // minimal MM version requirement (optional)
@@ -75,12 +60,45 @@ Module.register("MMM-MP3Player", {
 
     // function will be executed when your module is loaded successfully
 	start: function() { 
-    KitchenTimer = this;
-		Log.info("Starting module: " + this.name);
-        KTclock = 0;
-        
+        Log.info("Starting module: " + this.name);
+
+        // add identifier to the config
+        this.config.identifier = this.identifier;
+
+        // ensure file extensions are lower case
+        this.config.validAudioFileExtensions = this.config.validAudioFileExtensions.toLowerCase();
+
+        this.errorMessage = null;
+        if (this.config.musicPath.length == 0) {
+            this.errorMessage = "MMM-MP3Player: Parameter Missing.";
+        } else {
+        // create an empty image list
+        this.songList = [];
+        // set beginning image index to 0, as it will auto increment on start
+        this.musicIndex = 0;
+        this.updateSongList();
+        }
+
         "use strict"
-	},
+    },
+    
+    // the socket handler
+    socketNotificationReceived: function(notification, payload) {
+        // if an update was received
+        if (notification === "MP3PLAYER_FILELIST") {
+            // check this is for this module based on the woeid
+            if (payload.identifier === this.identifier) {
+                // console.info("Returning Songs, payload:" + JSON.stringify(payload));
+                // set the song list
+                this.songList = payload.songList;
+                // if music list actually contains songs
+                // set loaded flag to true and update dom
+                if (this.songList.length > 0) {
+                    this.resume();
+                }
+            }
+        }
+    },
 
     // place for global variables can also be placed above the
     // beginning of the module code or after the getDom function
@@ -341,11 +359,21 @@ Module.register("MMM-MP3Player", {
 
     // ???? --> needs work here
     getMusic: function() {
-        if(!this.config.useURL) {
-            music.src = "modules/MMM-MP3Player/music/";
+        if(this.config.musicPath.length > 0) {
+            music.src = this.config.musicPath;
         } else {
-            music.src = this.config.songsArray;
-        };
+            this.errorMessage = "MMM-MP3Player: Music Directory Is Empty.";
+        }
         return music;
     },
+
+    updateSongList: function() {
+      this.suspend();
+      // console.info('Getting Music');
+      // ask helper function to get the song list
+      this.sendSocketNotification(
+        "MP3PLAYER_REGISTER_CONFIG",
+        this.config
+      );
+    }
 });
