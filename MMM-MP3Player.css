@@ -1,7 +1,7 @@
 
 @import url("https://fonts.googleapis.com/css?family=Englebert");
 
-.mediaplayer {
+.MMM-MP3Player .mediaplayer {
 	background: linear-gradient(left, 
 		rgb(70,35,15) 0%,
 		
@@ -22,40 +22,48 @@
 	width: 450px;
 	max-width: 625px;
 	height: auto;
+	margin-top: 35%;
+	margin-left: 25%;
 	display: flex;
 	flex-direction: row;
 	padding: 10px;
 	box-sizing: border-box;
 	border-radius: 100px;
 }
+
 @media (max-width: 450px) {
-	.mediaplayer {
+	.MMM-MP3Player .mediaplayer {
 		flex-direction: column;
 		border-radius: 50px;
 	}	
 }
-audio {
+
+.MMM-MP3Player .audio {
 	width:0;
 	height:0;
 	position: absolute;
 	left:0;
 }
-.discarea {
+
+.MMM-MP3Player .discarea {
 	margin: 10px;
 }
+
 @media (max-width: 450px) {
-	.discarea {
+	.MMM-MP3Player .discarea {
 		margin:10px auto;
 	}
-	.disc {
+	.MMM-MP3Player .disc {
 		margin-left: 40px;
 	}
 }
+
 @keyframes spinDisc {
 	from {transform: rotate(0deg);}
 	to 	 {transform: rotate(360deg);}
 }
-.disc {
+
+.MMM-MP3Player .disc {
 	position: relative;
 	display: block;
 	float: left;
@@ -64,16 +72,19 @@ audio {
 	background-color: #222;
 	border-radius: 50%;
 }
-.mediaplayer.play .disc {
+
+.MMM-MP3Player .mediaplayer.play .disc {
 	animation: spinDisc 2s linear 0.3s infinite forwards;
 }
-.disc::before,
-.disc::after {
+
+.MMM-MP3Player .disc::before,
+.MMM-MP3Player .disc::after {
 	content:"";
 	position: absolute;
 	border-radius: 50%;
 }
-.disc::before {
+
+.MMM-MP3Player .disc::before {
 	background-color: #D40;
 	top: 32.5%;
 	left: 32.5%;
@@ -81,7 +92,8 @@ audio {
 	height: 35%;
 	z-index: 2;
 }
-.disc::after {
+
+.MMM-MP3Player .disc::after {
 	position: absolute;
 	top: 5%;
 	left: 5%;
@@ -92,7 +104,8 @@ audio {
 	border-radius: 50%;
 	z-index: 1;
 }
-.stylus {
+
+.MMM-MP3Player .stylus {
 	position: relative;
 	display: block;
 	float:left;
@@ -102,17 +115,20 @@ audio {
 	transform-origin: 15px 15px;
 	transition: transform 0.3s ease-in-out;
 }
-.mediaplayer.play .stylus {
+
+.MMM-MP3Player .mediaplayer.play .stylus {
 	transform: rotate(34deg);
 }
-.pivot {
+
+.MMM-MP3Player .pivot {
 	position: absolute;
 	width: 30px;
 	height: 30px;
 	background-color: #69727B;
 	border-radius: 50%;
 }
-.arm {
+
+.MMM-MP3Player .arm {
 	position: absolute;
 	width:5px;
 	height:70px;
@@ -122,7 +138,8 @@ audio {
 	border-top-right-radius: 2px;
 	border-top-left-radius: 2px;
 }
-.arm::before {
+
+.MMM-MP3Player .arm::before {
 	content:" ";
 	position: absolute;
 	border-radius: 50%;
@@ -132,7 +149,8 @@ audio {
 	width: 10px;
 	height: 10px;
 }
-.head {
+
+.MMM-MP3Player .head {
 	position: absolute;
 	width: 8px;
 	height: 15px;
@@ -143,35 +161,40 @@ audio {
 	transform-origin: 50% 0;
 	transform: rotate(30deg);
 }
-.controls {
+
+.MMM-MP3Player .controls {
 	margin: 10px;
 	display: flex;
 	flex-direction:column;
 }
-.title {
+
+.MMM-MP3Player .title {
 	width: 85%;
 	padding: 3px 0 3px 10px;
 	font-size: 1rem;
 	font-weight: 600;
-	font-family: "Englebert";
+	font-family: 'Englebert';
 	color: #7F3A2B;
 	background-color: aliceblue;
 	border-radius: 25px;
 	border: 1px solid maroon;
 	overflow:hidden;
 }
+
 @media (max-width: 450px) {
-	.title {
+	.MMM-MP3Player .title {
 		width: 100%;
 		text-align: center;
 	}	
 }
-.buttons {
+
+.MMM-MP3Player .buttons {
 	margin: 10px 0;
-	display:flex;
+	display: flex;
 	flex-direction:row;	
 }
-.buttons button {
+
+.MMM-MP3Player .buttons button {
 	width: 50px;
 	height: 50px;
 	text-align: center;
@@ -184,110 +207,123 @@ audio {
 	font-size: 1.2rem;
 	border: 1px solid;
 }
-.buttons button:hover {
+
+.MMM-MP3Player .buttons button:hover {
 	cursor: pointer;
 }
-.buttons button i::before {
+
+.MMM-MP3Player .buttons button i::before {
 	text-shadow: 0 0 20px rgba(255,255,255,0.4);
 	transition: text-shadow 0.3s ease;
 }
-.buttons button:hover i::before {
+
+.MMM-MP3Player .buttons button:hover i::before {
 	text-shadow: 0 0 20px white;
 }
-.mediaplayer.play .playstate {
+
+.MMM-MP3Player .mediaplayer.play .playstate {
 	background-color: #C63C3C;
 }
-.playstate .fa-pause,
-.mediaplayer.play .playstate .fa-play {
+
+.MMM-MP3Player .playstate .fa-pause,
+.MMM-MP3Player .mediaplayer.play .playstate .fa-play {
 	display: none;
 }
-.mediaplayer.play .fa-pause {
+
+.MMM-MP3Player .mediaplayer.play .fa-pause {
 	display: block;
 }
+
 @media (max-width: 450px) {
-	.buttons button {
+	.MMM-MP3Player .buttons button {
 		margin: 0 5px;
 	}
 }
-.subControls {
+
+.MMM-MP3Player .subControls {
 	display: flex;
 	flex-direction: row;
 }
+
 @media (max-width: 450px) {
-	.subControls {
+	.MMM-MP3Player .subControls {
 		flex-direction: row nowrap;
 		justify-content: space-around;
 		margin-bottom: 20px;
 	}	
 }
-.duration {
+
+.MMM-MP3Player .duration {
 	width: 110px;
 	text-align: center;
 	padding: 3px 10px;
 	font-size: 1rem;
 	font-weight: 600;
-	font-family: "Englebert";
+	font-family: 'Englebert';
 	color: #7F3A2B;
 	background-color: aliceblue;
 	border-radius: 25px;
 	border: 1px solid maroon;
 	margin-right: 10px;
 }
-.volumeSlider {
+
+.MMM-MP3Player .volumeSlider {
   -webkit-appearance: none;
   appearance: none;
   width: 65px;
   background: transparent;
 }
 
-.volumeSlider:focus {
+.MMM-MP3Player .volumeSlider:focus {
   outline: none;
 }
 
-.volumeSlider::-webkit-slider-thumb {
+.MMM-MP3Player .volumeSlider::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	height: 20px;
 	width: 20px;
 	border-radius: 50%;
 	background-color: #69727B;
 	cursor: pointer;
-	margin-top: -6px;
+	margin-top: -7px;
 	border: 1px solid maroon;
 }
 
-.volumeSlider::-webkit-slider-thumb:active {
-	background-color: #555;
+.MMM-MP3Player .volumeSlider::-webkit-slider-thumb:active {
+	background-color: #999;
 }
-.volumeSlider::-moz-range-thumb {
+
+.MMM-MP3Player .volumeSlider::-moz-range-thumb {
 	height: 20px;
 	width: 20px;
 	border-radius: 50%;
 	background-color: #69727B;
 	cursor: pointer;
-	margin-top: -6px;
-	border-top: #bbc 2px solid;
-	border-left: #ccd 2px solid;
-	border-right: #aab 2px solid;
-	border-bottom: #bbc 2px solid;
+	margin-top: -7px;
+	border: 1px solid maroon;
 }
 
-.volumeSlider::-webkit-slider-runnable-track {
+.MMM-MP3Player .volumeSlider::-webkit-slider-runnable-track {
 	width: 100%;
 	height: 8px;
 	cursor: pointer;
 	background-color:#8B949D;
+	border: 1px solid maroon;
 	border-radius: 4px;
 	margin-top: 2px;
 }
-.volumeSlider::-webkit-slider-runnable-track:active {
-	background-color: #69727B;
+
+.MMM-MP3Player .volumeSlider::-webkit-slider-runnable-track:active {
+	background-color: #999;
+	border: 1px solid maroon;
 }
 
-.volumeSlider::-moz-range-track {
+.MMM-MP3Player .volumeSlider::-moz-range-track {
 	width: 100%;
 	height: 8px;
 	cursor: pointer;
 	background-color:#8B949D;
 	border-radius: 4px;
+	border: 1px solid maroon;
 	margin-top: 2px;
 }
