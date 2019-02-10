@@ -40,7 +40,7 @@ Module.register("MMM-MP3Player", {
 	defaults: {
         musicPath: "modules/MMM-MP3Player/music", // path to where music is stored
         randomOrder: true, // true to shuffle songs - false to play in order listed
-        validImagAudioFileExtensions: "mp3,ogg,wma,aac",  // list of valid file extensions, seperated by commas
+        validAudioFileExtensions: "mp3,ogg,wma,aac",  // list of valid file extensions, seperated by commas
 	},
 
     // minimal MM version requirement (optional)
@@ -76,27 +76,36 @@ Module.register("MMM-MP3Player", {
         this.songList = [];
         // set beginning image index to 0, as it will auto increment on start
         this.musicIndex = 0;
-        this.updateSongList();
         }
 
         "use strict"
     },
-    
+    // notificationReceived from other modules/system
+		notificationReceived: function(notification, payload, source){
+					if(notification==="ALL_MODULES_STARTED"){
+						// tell node_helper about config
+    			  this.sendSocketNotification(
+      			  "MP3PLAYER_REGISTER_CONFIG",
+     				   this.config)
+		        this.updateSongList();
+					}
+		},
     // the socket handler
     socketNotificationReceived: function(notification, payload) {
         // if an update was received
         if (notification === "MP3PLAYER_FILELIST") {
             // check this is for this module based on the woeid
-            if (payload.identifier === this.identifier) {
-                // console.info("Returning Songs, payload:" + JSON.stringify(payload));
+						// socket notifications are ONLY from this modules node_helper. <----------------
+           // if (payload.identifier === this.identifier) {
+                console.info("Returning Songs, payload:" + JSON.stringify(payload));
                 // set the song list
-                this.songList = payload.songList;
+                this.songList = payload;
                 // if music list actually contains songs
                 // set loaded flag to true and update dom
                 if (this.songList.length > 0) {
                     this.resume();
                 }
-            }
+           // }
         }
     },
 
@@ -127,10 +136,10 @@ Module.register("MMM-MP3Player", {
 
             // <audio id="audioPlayer" src="https://d34x6xks9kc6p2.cloudfront.net/540997b0-a35f-4b69-86d6-b1c925c4a264/540997b0-a35f-4b69-86d6-b1c925c4a264.mp3">
             // ???? --> needs work here
-                var audio = document.createElement("audio");
+                var audioPlayer = document.createElement("audio");
         // ???? --> need to define 'audioPlayer'
-                audio.src = "MMM-MP3Player-player";
-                audio.id = "audioPlayer";
+               // audioPlayer.src = "MMM-MP3Player-player";
+                audioPlayer.id = "audioPlayer";
 
                 // <-- from original JS code --> (lines 65 - 68)
                 audioPlayer.addEventListener("loadeddata", () => {
@@ -231,7 +240,8 @@ Module.register("MMM-MP3Player", {
                     setTimeout(() => {
                         audioPlayer.play()
                     }, 300);
-                    timer = setInterval(updateDurationLabel, 100);
+										// don't need this, timer is already running, defined just before getDom() <-------
+                    //timer = setInterval(updateDurationLabel, 100);
                 } else {
                     audioPlayer.pause();
                     clearInterval(timer);
@@ -371,9 +381,6 @@ Module.register("MMM-MP3Player", {
       this.suspend();
       // console.info('Getting Music');
       // ask helper function to get the song list
-      this.sendSocketNotification(
-        "MP3PLAYER_REGISTER_CONFIG",
-        this.config
-      );
+			this.sendSocketNotification( "MP3PLAYER_GET_FILELIST" );
     }
 });
