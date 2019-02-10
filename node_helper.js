@@ -53,6 +53,7 @@ module.exports = NodeHelper.create({
 		var self = this;
 
 		this.expressApp.get("/MMM-MP3Player/music", function(req, res) {
+			console.log("received request for music files");
 			self.getMusicSongs(req, res);
 		});
 
@@ -64,9 +65,9 @@ module.exports = NodeHelper.create({
 		directoryMusic = this.path_songs;
 		var mp3Player = this.getMusic(this.getFiles(directoryMusic)).map(function (mp3) {
 			//console.log("have song="+mp3);
-			return {url: "/MMM-ImagesPhotos/photo/" + img};
+			return {url: "/MMM-MP3Player/music/" + mp3};
 		})
-    //console.log("sending music list to module = " + mp3Player);
+    console.log("sending music list to module = " + mp3Player);
 		res.send(mp3Player);
 	},
 

@@ -33,7 +33,7 @@
 // to see how it was converted to MM module
 
 // ???? --> needs work here (will show places in the code I still need to figure out)
-
+var self;
 // <-- beginning of module code -->
 Module.register("MMM-MP3Player", {
     // <-- user congiurations -->
@@ -42,7 +42,7 @@ Module.register("MMM-MP3Player", {
         randomOrder: true, // true to shuffle songs - false to play in order listed
         validAudioFileExtensions: "mp3,ogg,wma,aac",  // list of valid file extensions, seperated by commas
 	},
-
+		useUrl: true,
     // minimal MM version requirement (optional)
     requiresVersion: "2.1.0",
     
@@ -60,6 +60,7 @@ Module.register("MMM-MP3Player", {
 
     // function will be executed when your module is loaded successfully
 	start: function() { 
+				self = this;
         Log.info("Starting module: " + this.name);
 
         // add identifier to the config
@@ -97,14 +98,7 @@ Module.register("MMM-MP3Player", {
             // check this is for this module based on the woeid
 						// socket notifications are ONLY from this modules node_helper. <----------------
            // if (payload.identifier === this.identifier) {
-                console.info("Returning Songs, payload:" + JSON.stringify(payload));
-                // set the song list
-                this.songList = payload;
-                // if music list actually contains songs
-                // set loaded flag to true and update dom
-                if (this.songList.length > 0) {
-                    this.resume();
-                }
+					 	self.haveMusicResponse(payload)
            // }
         }
     },
@@ -124,6 +118,35 @@ Module.register("MMM-MP3Player", {
     // timer = setInterval(updateDurationLabel, 100) <---(change from original)
     timer: setInterval(this.updateDurationLabel, 100),
 
+		getMusic: function() {
+		var urlApHelper = "/MMM-MP3Player/music";
+		var self = this;
+		var retry = true;
+
+		var musicRequest = new XMLHttpRequest();
+		musicRequest.open("GET", urlApHelper, true);
+
+		musicRequest.onreadystatechange = function() {
+			if (this.readyState === 4) {
+				if (this.status === 200) {
+					self.haveMusicResponse(this.response)
+				} 
+			}
+		};
+		// send the request to the 'server'
+		Log.log("requesting music file list from server");
+		musicRequest.send();
+		},
+		haveMusicResponse: function(filelist){
+					Log.log("have list of music files="+JSON.stringify(filelist));
+					self.songList = filelist;
+          // if music list actually contains songs
+          // set loaded flag to true and update dom
+          if (self.songList.length > 0) {
+            self.resume();
+					}
+
+		},
     getDom: function() {
 
         // the main '<"div">' equivalent of HTML IE: replaces <html>, <head>, <body>, etc 
@@ -368,19 +391,24 @@ Module.register("MMM-MP3Player", {
     },
 
     // ???? --> needs work here
-    getMusic: function() {
+   /* getMusic: function() {
         if(this.config.musicPath.length > 0) {
             music.src = this.config.musicPath;
         } else {
             this.errorMessage = "MMM-MP3Player: Music Directory Is Empty.";
         }
         return music;
-    },
+    }, */
 
     updateSongList: function() {
       this.suspend();
       // console.info('Getting Music');
       // ask helper function to get the song list
-			this.sendSocketNotification( "MP3PLAYER_GET_FILELIST" );
+			if(self.useUrl) {
+				self.getMusic();
+			}
+			else {
+				this.sendSocketNotification( "MP3PLAYER_GET_FILELIST" );
+			}
     }
 });
